@@ -144,130 +144,69 @@ Even though this project is local-data based right now, the structure is API-rea
 
 ## Main Functions Used
 
-Below are the primary functions used across the project, grouped by layer.
+Below are the primary functions used across the project, presented in tabular form.
 
 ### 1) Store functions (`store/useFinanceStore.js`)
 
-#### Data lifecycle
-- `fetchTransactions()`  
-  Loads fallback transactions and controls initial loading state.
-- `fetchAndSeed()`  
-  Wrapper used on app boot to seed data.
-- `addTransaction(transaction)`  
-  Adds a new transaction with generated `_id`.
-- `updateTransaction(id, updates)`  
-  Updates an existing transaction by id.
-- `deleteTransaction(id)`  
-  Removes a transaction by id.
-
-#### Navigation and UI state
-- `setActiveTab(tab)`  
-  Switches between `dashboard`, `transactions`, and `insights`.
-- `setRole(role)`  
-  Switches role (`admin`/`viewer`) for write-access behavior.
-- `toggleDarkMode()`  
-  Toggles dark/light mode state.
-- `toggleSidebar()` / `setMobileSidebarOpen(open)`  
-  Controls sidebar visibility states.
-
-#### Dashboard customization
-- `toggleEditMode()`  
-  Enables/disables drag-edit mode.
-- `toggleWidget(key)`  
-  Toggles a widget on/off.
-- `addWidget(key)` / `removeWidget(key)`  
-  Adds or removes widgets from layout.
-- `reorderWidgets(fromIndex, toIndex)`  
-  Reorders widgets after drag/drop.
-- `moveWidgetToEnd(key)`  
-  Appends widget to layout if not present.
-- `resetLayout()`  
-  Restores default dashboard widget configuration.
-- `setCustomizerOpen(open)`  
-  Opens/closes dashboard customizer panel.
-
-#### Month detail and modal control
-- `setSelectedMonth(month)`  
-  Sets selected month for filtered view.
-- `openMonthDetail(month)` / `closeMonthDetail()`  
-  Controls month drill-down modal.
-- `openModal(transaction?)` / `closeModal()`  
-  Controls transaction create/edit modal.
-
-#### Transaction list behavior
-- `setFilters(filters)` / `resetFilters()`  
-  Applies and clears filter state.
-- `setSortConfig(key)`  
-  Toggles sort direction and active sort key.
-- `setCurrentPage(page)`  
-  Updates pagination page.
-
-#### Derived selectors in store
-- `getFilteredTransactions()`  
-  Returns filtered + sorted transactions.
-- `getPaginatedTransactions()`  
-  Returns current page subset.
-- `getTotalPages()`  
-  Calculates total pages from current filter set.
+| Area | Function | Purpose |
+|---|---|---|
+| Data lifecycle | `fetchTransactions()` | Loads fallback transactions and controls initial loading state. |
+| Data lifecycle | `fetchAndSeed()` | Bootstraps transaction data when the app loads. |
+| Data lifecycle | `addTransaction(transaction)` | Adds a new transaction with generated `_id`. |
+| Data lifecycle | `updateTransaction(id, updates)` | Updates an existing transaction by id. |
+| Data lifecycle | `deleteTransaction(id)` | Removes a transaction by id. |
+| Navigation/UI | `setActiveTab(tab)` | Switches between dashboard, transactions, and insights tabs. |
+| Navigation/UI | `setRole(role)` | Switches role between `admin` and `viewer`. |
+| Navigation/UI | `toggleDarkMode()` | Toggles dark/light mode state. |
+| Navigation/UI | `toggleSidebar()` / `setMobileSidebarOpen(open)` | Controls desktop/mobile sidebar visibility. |
+| Dashboard customization | `toggleEditMode()` | Enables or disables drag-edit mode. |
+| Dashboard customization | `toggleWidget(key)` | Toggles widget visibility. |
+| Dashboard customization | `addWidget(key)` / `removeWidget(key)` | Adds/removes widget from current layout. |
+| Dashboard customization | `reorderWidgets(fromIndex, toIndex)` | Reorders widgets after drag/drop. |
+| Dashboard customization | `moveWidgetToEnd(key)` | Appends widget to layout if missing. |
+| Dashboard customization | `resetLayout()` | Restores default widget layout. |
+| Dashboard customization | `setCustomizerOpen(open)` | Opens/closes widget customizer panel. |
+| Month + modal control | `setSelectedMonth(month)` | Sets selected month filter for dashboards/charts. |
+| Month + modal control | `openMonthDetail(month)` / `closeMonthDetail()` | Controls month drill-down modal. |
+| Month + modal control | `openModal(transaction?)` / `closeModal()` | Controls transaction create/edit modal. |
+| Transactions list | `setFilters(filters)` / `resetFilters()` | Applies and clears transaction filters. |
+| Transactions list | `setSortConfig(key)` | Toggles sort key + direction. |
+| Transactions list | `setCurrentPage(page)` | Updates current pagination page. |
+| Derived selectors | `getFilteredTransactions()` | Returns filtered + sorted transactions. |
+| Derived selectors | `getPaginatedTransactions()` | Returns current page subset. |
+| Derived selectors | `getTotalPages()` | Calculates total pages from filtered results. |
 
 ### 2) Utility functions (`utils/helpers.js`)
 
-#### Formatting utilities
-- `formatCurrency(amount)`  
-  Formats value in USD.
-- `formatShortCurrency(amount)`  
-  Abbreviated currency format (`K`/`M`).
-- `formatDate(dateStr)`  
-  Human-friendly date text (`Today`, `Yesterday`, etc.).
+| Area | Function | Purpose |
+|---|---|---|
+| Formatting | `formatCurrency(amount)` | Formats amount in USD currency style. |
+| Formatting | `formatShortCurrency(amount)` | Short amount format (`K`, `M`) for compact UI. |
+| Formatting | `formatDate(dateStr)` | Human-readable date labels like Today/Yesterday. |
+| Core analytics | `calculateTotals(transactions)` | Returns `{ income, expenses, balance }`. |
+| Core analytics | `getSpendingByCategory(transactions)` | Aggregates expenses by category (descending). |
+| Core analytics | `getMonthlyData(transactions)` | Builds monthly grouped income/expense dataset. |
+| Core analytics | `getTopSpendingCategory(transactions, categories)` | Finds highest-spend category and percentage share. |
+| Core analytics | `generateInsights(transactions, categories)` | Creates insights from trends and spending behavior. |
+| Transformations | `filterByMonth(transactions, selectedMonth)` | Restricts transactions to selected month. |
+| Transformations | `filterTransactions(transactions, filters)` | Applies search/type/category/date-range filters. |
+| Transformations | `sortTransactions(transactions, sortConfig)` | Sorts by date/category/amount with direction. |
+| Transformations | `isAfter(dateA, dateB)` | Utility date comparator used in formatting logic. |
+| Export | `exportToCSV(transactions)` | Downloads transactions as CSV file. |
+| Export | `exportToJSON(transactions)` | Downloads transactions as JSON file. |
 
-#### Core analytics
-- `calculateTotals(transactions)`  
-  Returns `{ income, expenses, balance }`.
-- `getSpendingByCategory(transactions)`  
-  Aggregates and sorts expense totals by category.
-- `getMonthlyData(transactions)`  
-  Builds monthly grouped income/expense dataset.
-- `getTopSpendingCategory(transactions, categories)`  
-  Returns highest-spend category with percentage share.
-- `generateInsights(transactions, categories)`  
-  Produces insight cards from trends + totals.
+### 3) Important UI-level handlers
 
-#### Data transformation helpers
-- `filterByMonth(transactions, selectedMonth)`  
-  Narrows data to selected month.
-- `filterTransactions(transactions, filters)`  
-  Applies search/type/category/date filtering.
-- `sortTransactions(transactions, sortConfig)`  
-  Sorts by selected key and direction.
-- `isAfter(dateA, dateB)`  
-  Date comparison utility used in formatting logic.
-
-#### Export utilities
-- `exportToCSV(transactions)`  
-  Downloads transactions as CSV.
-- `exportToJSON(transactions)`  
-  Downloads transactions as JSON.
-
-### 3) Important UI-level functions
-
-#### Dashboard drag logic (`components/dashboard/DashboardGrid.jsx`)
-- `handleDragStart(event)`  
-  Tracks currently dragged widget id.
-- `handleDragEnd(event)`  
-  Handles drop result and reorders/inserts widgets.
-- `getPairForRow(widgetKey, layout)`  
-  Computes how half-width widgets are paired in rows.
-
-#### Transaction form logic (`components/transactions/TransactionModal.jsx`)
-- `validate()`  
-  Runs required-field and amount checks.
-- `handleSubmit(e)`  
-  Creates or updates transaction based on edit mode.
-
-#### Interaction helpers in navbar and lists
-- Transaction export buttons call `exportToCSV()` and `exportToJSON()`.
-- Search input updates `setFilters()` in real-time.
-- Sort headers call `setSortConfig()`.
+| File | Function/Handler | Purpose |
+|---|---|---|
+| `components/dashboard/DashboardGrid.jsx` | `handleDragStart(event)` | Captures currently dragged widget id. |
+| `components/dashboard/DashboardGrid.jsx` | `handleDragEnd(event)` | Resolves drop behavior and widget reordering/insertion. |
+| `components/dashboard/DashboardGrid.jsx` | `getPairForRow(widgetKey, layout)` | Pairs half-width widgets into row layout logic. |
+| `components/transactions/TransactionModal.jsx` | `validate()` | Validates required fields and amount before submit. |
+| `components/transactions/TransactionModal.jsx` | `handleSubmit(e)` | Creates or updates transaction based on edit mode. |
+| `components/layout/Navbar.jsx` | Export handlers | Triggers `exportToCSV()` and `exportToJSON()` actions. |
+| `components/layout/Navbar.jsx` + `components/transactions/TransactionFilters.jsx` | Search/filter handlers | Updates filter state in real-time from search inputs. |
+| `components/transactions/TransactionList.jsx` | Sort header handlers | Calls `setSortConfig()` for date/category/amount sorting. |
 
 ## Feature Explanation
 
@@ -337,3 +276,21 @@ Current data source is local fallback data (`FALLBACK_TRANSACTIONS`) loaded into
 - No backend/API integration yet (all data is local in client state).
 - No server-side auth/authorization (role toggle is UI-level behavior).
 - Build uses Google `next/font` (Geist); internet access may be required during build/font fetch.
+
+## Assignment Feature Coverage
+
+The following required features are implemented in this project:
+
+| # | Feature | Status | Implementation |
+|---|---|---|---|
+| 1 | Dashboard Overview with Summary Cards | Implemented | `SummaryCards.jsx`, `HeroBalance.jsx`, `QuickStats.jsx` |
+| 2 | Time Based Visualization | Implemented | `BalanceTrendChart.jsx`, `CashFlowChart.jsx`, `SpendingByDayChart.jsx`, `SavingsRateGauge.jsx` |
+| 3 | Categorical Visualization | Implemented | `SpendingBreakdown.jsx`, `CategoryRings.jsx` |
+| 4 | Transaction List with Details | Implemented | `TransactionList.jsx`, `TransactionModal.jsx`, `RecentActivity.jsx` |
+| 5 | Transaction Filtering | Implemented | `TransactionFilters.jsx` - filters by search, type, category, date range |
+| 6 | Transaction Sorting & Search | Implemented | `TransactionList.jsx` - sort by date/category/amount (asc/desc) + search bar in `Navbar.jsx` and `TransactionFilters.jsx` |
+| 7 | Role Based UI (Viewer/Admin) | Implemented | `Navbar.jsx` + `useFinanceStore.js` - admin (full access) / viewer (read-only) with role switcher |
+| 8 | Insights Section | Implemented | `SmartInsights.jsx`, `MonthlyComparison.jsx` - dedicated Insights tab |
+| 9 | State Management (Zustand) | Implemented | `useFinanceStore.js` - Zustand store used by 20+ components |
+| 10 | Responsive Design | Implemented | All components use responsive Tailwind classes (`sm:`, `md:`, `lg:`), mobile sidebar, and compact mobile layouts |
+
